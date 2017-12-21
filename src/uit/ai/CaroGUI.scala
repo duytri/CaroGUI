@@ -5,7 +5,9 @@ import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.Scene
-import scalafxml.core.{ NoDependencyResolver, FXMLView }
+import scalafxml.core.{ DependenciesByType, FXMLView }
+import scala.reflect.runtime.universe.typeOf
+import uit.ai.controller.CaroDependency
 
 object CaroGUI extends JFXApp {
 
@@ -14,7 +16,8 @@ object CaroGUI extends JFXApp {
     throw new IOException("Cannot load resource: CaroGUI.fxml")
   }
 
-  val root = FXMLView(resource, NoDependencyResolver)
+  val root = FXMLView(resource, new DependenciesByType(Map(
+      typeOf[CaroDependency] -> new CaroDependency("Init string"))))
 
   stage = new PrimaryStage() {
     title = "CHUONG TRINH THI DAU CO CARO"
