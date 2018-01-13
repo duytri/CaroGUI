@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<fx:root dividerPositions="0.6" prefHeight="580.0" prefWidth="965.0" type="SplitPane" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uit.ai.controller.CaroController">
+<SplitPane dividerPositions="0.6" prefHeight="580.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/8.0.131" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uit.ai.controller.CaroController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
@@ -115,4 +115,4 @@
    <cursor>
       <Cursor fx:constant="HAND" />
    </cursor>
-</fx:root>
+</SplitPane>

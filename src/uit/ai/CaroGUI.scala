@@ -5,9 +5,9 @@ import scalafx.Includes._
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.Scene
-import scalafxml.core.{ DependenciesByType, FXMLView }
-import scala.reflect.runtime.universe.typeOf
-import uit.ai.controller.CaroDependency
+import scalafxml.core.FXMLView
+import scalafxml.core.NoDependencyResolver
+import scalafx.scene.image.Image
 
 object CaroGUI extends JFXApp {
 
@@ -16,12 +16,11 @@ object CaroGUI extends JFXApp {
     throw new IOException("Cannot load resource: CaroGUI.fxml")
   }
 
-  val root = FXMLView(resource, new DependenciesByType(Map(
-      typeOf[CaroDependency] -> new CaroDependency("Init string"))))
+  val root = FXMLView(resource, NoDependencyResolver)
 
-  stage = new PrimaryStage() {
+  stage = new PrimaryStage {
     title = "CHUONG TRINH THI DAU CO CARO"
-    fullScreen_=(true)
+    icons += new Image("/uit/ai/view/uit_logo.png")
     scene = new Scene(root)
   }
 }

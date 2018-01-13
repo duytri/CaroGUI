@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/scalafx_2.12-8.0.144-R12.jar"/>
 	<classpathentry kind="lib" path="lib/jfoenix.jar"/>
 	<classpathentry kind="lib" path="lib/scalafxml-core-sfx8_2.12-0.4.jar"/>
-	<classpathentry kind="lib" path="lib/scalafxml-core-macros-sfx8_2.11-0.4.jar"/>
+	<classpathentry kind="lib" path="lib/scalafxml-core-macros-sfx8_2.12-0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
