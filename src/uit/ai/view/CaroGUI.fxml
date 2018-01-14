@@ -93,7 +93,7 @@
                   <Font size="14.0" />
                </font>
             </JFXTextField>
-            <JFXCheckBox fx:id="cbTwoHead" layoutX="172.0" layoutY="276.0" selected="true" text="Không thắng nếu chặn hai đầu" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="276.0" />
+            <JFXCheckBox fx:id="cbTwoHead" layoutX="172.0" layoutY="276.0" text="Không thắng nếu chặn hai đầu" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="276.0" />
             <JFXButton fx:id="btnStart" defaultButton="true" layoutX="58.0" layoutY="340.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#startGame" prefHeight="58.0" prefWidth="138.0" ripplerFill="#31dd45" style="-fx-background-color: #c8ffcf;" text="Bắt đầu" textFill="#00720b" AnchorPane.bottomAnchor="170.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
                <font>
                   <Font size="14.0" />
