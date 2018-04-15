@@ -22,6 +22,7 @@ import scalafx.scene.Node
 import java.util.ArrayList
 import javafx.scene.layout.StackPane
 import javafx.scene.{ layout => jfxsl }
+import javafx.event.EventHandler
 
 @sfxml
 class CaroController(
@@ -50,19 +51,20 @@ class CaroController(
         GridPane.setColumnIndex(label, j);
 
         boardPane.getChildren().add(label);
-        boardPane.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler[MouseEvent]() {
-            @Override
-            def handle(e: MouseEvent) {
+        boardPane.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler[javafx.scene.input.MouseEvent]() {
+          @Override
+          def handle(e: javafx.scene.input.MouseEvent) {
 
-                for(node <- boardPane.getChildren.toArray) {
+            for (node <- boardPane.getChildren.toArray) {
 
-                    if(node isInstanceOf Label) {
-                        if( node.getBoundsInParent().contains(e.getSceneX(),  e.getSceneY())) {
-                            println( "Node: " + node + " at " + GridPane.getRowIndex(node) + "/" + GridPane.getColumnIndex(node))
-                        }
-                    }
+              if (node.isInstanceOf[Label]) {
+                label = node.asInstanceOf[Label]
+                if (label.getBoundsInParent().contains(e.getSceneX(), e.getSceneY())) {
+                  println("Node: " + node + " at " + GridPane.getRowIndex(label) + "/" + GridPane.getColumnIndex(label))
                 }
+              }
             }
+          }
         });
       }
     }
