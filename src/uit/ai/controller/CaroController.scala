@@ -15,27 +15,64 @@ import scalafx.scene.control.ButtonType
 import uit.ai.CaroGUI
 import com.jfoenix.controls.JFXDialog
 import scalafx.scene.control.Label
-import javafx.scene.layout.StackPane
 import com.jfoenix.controls.JFXDialogLayout
 import scalafx.scene.text.Text
-import javafx.scene.Node
-import java.util.List
+import scalafx.scene.input.MouseEvent
+import scalafx.scene.Node
 import java.util.ArrayList
-import javafx.event.EventHandler
+import javafx.scene.layout.StackPane
+import javafx.scene.{ layout => jfxsl }
 
 @sfxml
 class CaroController(
   @FXML private var boardPane: GridPane,
-  @FXML private var playerX: JFXTextField,
-  @FXML private var playerO: JFXTextField,
+  @FXML private var playerSquare: JFXTextField,
+  @FXML private var playerRound: JFXTextField,
   @FXML private var boardSize: JFXTextField,
   @FXML private val cbTwoHead: JFXCheckBox,
   @FXML private val btnStart: JFXButton,
   @FXML private val btnStop: JFXButton) {
 
   def startGame(event: ActionEvent) {
-    playerX.setText("Điền vào đường dẫn của người chơi X")
-    playerO.setText("Điền vào đường dẫn của người chơi O")
+    playerSquare.setText("Điền vào đường dẫn của người chơi Vuông")
+    playerRound.setText("Điền vào đường dẫn của người chơi Tròn")
+
+    var hasBlock = cbTwoHead.isSelected()
+
+    var size = boardSize.getText.toInt
+
+    for (i <- 0 until size) {
+      for (j <- 0 until size) {
+
+        var label = new Label("Label " + i + "/" + j);
+        label.setMouseTransparent(true);
+        GridPane.setRowIndex(label, i);
+        GridPane.setColumnIndex(label, j);
+
+        boardPane.getChildren().add(label);
+        boardPane.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler[MouseEvent]() {
+            @Override
+            def handle(e: MouseEvent) {
+
+                for(node <- boardPane.getChildren.toArray) {
+
+                    if(node isInstanceOf Label) {
+                        if( node.getBoundsInParent().contains(e.getSceneX(),  e.getSceneY())) {
+                            println( "Node: " + node + " at " + GridPane.getRowIndex(node) + "/" + GridPane.getColumnIndex(node))
+                        }
+                    }
+                }
+            }
+        });
+      }
+    }
+  }
+
+  def playerClicked(event: MouseEvent) {
+    val source = event.getSource().asInstanceOf[javafx.scene.Node]
+    val colIndex = jfxsl.GridPane.getColumnIndex(source)
+    val rowIndex = jfxsl.GridPane.getRowIndex(source)
+    playerSquare.setText("Clicked: " + rowIndex + ":" + colIndex)
   }
 
   def endGame(event: ActionEvent) {
@@ -47,7 +84,7 @@ class CaroController(
     confirmForm.showAndWait
     if (confirmForm.getResult == javafx.scene.control.ButtonType.YES)
       Platform.exit()*/
-    
+
     //======== Cách dùng JFoenix truyền thống =======//
     val confirmForm = new JFXDialog // dialog
     val dialogLayout = new JFXDialogLayout // thiết kế layout
@@ -59,23 +96,22 @@ class CaroController(
     btnOK.setMinWidth(100)
     btnOK.setMinHeight(40)
     btnOK.setStyle("-fx-background-color:#ffa6a6") //màu nền đỏ
-    
+
     val btnCancel = new JFXButton("Không")
     btnCancel.setMinWidth(100)
     btnCancel.setMinHeight(40)
     btnCancel.setStyle("-fx-background-color:#c8ffcf") //màu nền xanh
-    
-    
+
     btnCancel.setOnAction(e => {
       confirmForm.close // đóng dialog, không thoát nữa
     })
-    
+
     btnOK.setOnAction(e => {
       Platform.exit // thoát chương trình
     })
-    
+
     // thêm 2 nút vào danh sách
-    val arrayBtn = new ArrayList[Node]()
+    val arrayBtn = new ArrayList[javafx.scene.Node]()
     arrayBtn.add(btnOK)
     arrayBtn.add(btnCancel)
 
