@@ -16,12 +16,16 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
-            <GridPane fx:id="boardPane" alignment="CENTER" gridLinesVisible="true" style="-fx-background-color: #ddffe1;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <GridPane fx:id="boardPane" alignment="CENTER" gridLinesVisible="true" onMouseClicked="#playerClicked" style="-fx-background-color: #ddffe1;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" />
+                  <ColumnConstraints hgrow="ALWAYS" />
+                  <ColumnConstraints hgrow="ALWAYS" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints vgrow="ALWAYS" />
+                  <RowConstraints vgrow="ALWAYS" />
+                  <RowConstraints vgrow="ALWAYS" />
               </rowConstraints>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -50,7 +54,7 @@
                   <Font size="14.0" />
                </font>
             </JFXTextField>
-            <JFXTextField fx:id="playerRound" focusColor="#a84040" layoutX="12.0" layoutY="184.0" prefHeight="25.0" prefWidth="202.0" promptText="Đường dẫn đến file JAR" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="190.0">
+            <JFXTextField fx:id="playerCircle" focusColor="#a84040" layoutX="12.0" layoutY="184.0" prefHeight="25.0" prefWidth="202.0" promptText="Đường dẫn đến file JAR" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="190.0">
                <font>
                   <Font size="14.0" />
                </font>

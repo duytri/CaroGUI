@@ -23,58 +23,78 @@ import java.util.ArrayList
 import javafx.scene.layout.StackPane
 import javafx.scene.{ layout => jfxsl }
 import javafx.event.EventHandler
+import javafx.scene.Group
+import scalafx.scene.control.Control
+import scalafx.scene.layout.Region
+import javafx.scene.layout.ColumnConstraints
+import javafx.scene.layout.RowConstraints
+import javafx.scene.layout.Priority
 
 @sfxml
 class CaroController(
   @FXML private var boardPane: GridPane,
   @FXML private var playerSquare: JFXTextField,
-  @FXML private var playerRound: JFXTextField,
+  @FXML private var playerCircle: JFXTextField,
   @FXML private var boardSize: JFXTextField,
   @FXML private val cbTwoHead: JFXCheckBox,
   @FXML private val btnStart: JFXButton,
   @FXML private val btnStop: JFXButton) {
 
+  var isSquareTurn = true //biến cờ lượt đi
+
   def startGame(event: ActionEvent) {
-    playerSquare.setText("Điền vào đường dẫn của người chơi Vuông")
-    playerRound.setText("Điền vào đường dẫn của người chơi Tròn")
+    // set Thông báo
+    if (playerSquare.getText == "")
+      playerSquare.setText("Con người")
+    if (playerCircle.getText == "")
+      playerCircle.setText("Con người")
 
-    var hasBlock = cbTwoHead.isSelected()
+    // get biến
+    var hasBlock = cbTwoHead.isSelected() //chặn hai đầu
+    var size = boardSize.getText.toInt //kích thước bàn cờ
 
-    var size = boardSize.getText.toInt
+    // xóa bàn cờ cũ
+    boardPane.getChildren.clear()
+    boardPane.getRowConstraints.clear()
+    boardPane.getColumnConstraints.clear()
+    boardPane.setGridLinesVisible(false)
 
-    for (i <- 0 until size) {
+    //tạo bàn cờ mới
+    for (i <- 0 until size) { //từng hàng
+      val r = new RowConstraints();
+      r.setVgrow(Priority.ALWAYS);
+      boardPane.getRowConstraints().add(r);
+    }
+
+    for (j <- 0 until size) { //từng cột
+      val c = new ColumnConstraints();
+      c.setHgrow(Priority.ALWAYS);
+      boardPane.getColumnConstraints().add(c);
+    }
+
+    for (i <- 0 until size) { //từng ô
       for (j <- 0 until size) {
-
-        var label = new Label("Label " + i + "/" + j);
+        var label = new Label("");
+        label.setPrefHeight(boardPane.getHeight)
+        label.setPrefWidth(boardPane.getWidth)
         label.setMouseTransparent(true);
         GridPane.setRowIndex(label, i);
         GridPane.setColumnIndex(label, j);
 
         boardPane.getChildren().add(label);
-        boardPane.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, new EventHandler[javafx.scene.input.MouseEvent]() {
-          @Override
-          def handle(e: javafx.scene.input.MouseEvent) {
-
-            for (node <- boardPane.getChildren.toArray) {
-
-              if (node.isInstanceOf[Label]) {
-                label = node.asInstanceOf[Label]
-                if (label.getBoundsInParent().contains(e.getSceneX(), e.getSceneY())) {
-                  println("Node: " + node + " at " + GridPane.getRowIndex(label) + "/" + GridPane.getColumnIndex(label))
-                }
-              }
-            }
-          }
-        });
       }
     }
+    
+    boardPane.setGridLinesVisible(true)
   }
 
   def playerClicked(event: MouseEvent) {
-    val source = event.getSource().asInstanceOf[javafx.scene.Node]
-    val colIndex = jfxsl.GridPane.getColumnIndex(source)
-    val rowIndex = jfxsl.GridPane.getRowIndex(source)
-    playerSquare.setText("Clicked: " + rowIndex + ":" + colIndex)
+    for (node <- boardPane.getChildren.toArray if node.isInstanceOf[javafx.scene.control.Label]) {
+      var label = node.asInstanceOf[javafx.scene.control.Label]
+      if (label.getBoundsInParent().contains(event.getSceneX() - 5, event.getSceneY() - 5)) { // 5 is a bias
+        //playerSquare.setText("Clicked: " + jfxsl.GridPane.getRowIndex(label) + ":" + jfxsl.GridPane.getColumnIndex(label))
+      }
+    }
   }
 
   def endGame(event: ActionEvent) {
