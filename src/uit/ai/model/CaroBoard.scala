@@ -104,7 +104,7 @@ object CaroBoard {
       }
       if (allTrue && array(i) != Blank) {
         if (hasBlock) {
-          if (i > 0 && i + n < array.length && array(i - 1) != array(i) && array(i + n) != array(i)) // dieu kien chan hai dau thi khong thang
+          if (i > 0 && i + n < array.length && array(i - 1) != array(i) && array(i + n) != array(i) && array(i - 1) != Blank && array(i + n) != Blank) // dieu kien chan hai dau thi khong thang
             return None
           else
             return Some(array(i))

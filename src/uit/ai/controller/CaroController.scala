@@ -5,27 +5,17 @@ import com.jfoenix.controls.JFXTextField
 import com.jfoenix.controls.JFXCheckBox
 import com.jfoenix.controls.JFXButton
 import scalafx.application.Platform
-import scalafx.scene.control.SplitPane
 import scalafx.scene.layout.GridPane
 import javafx.fxml.FXML
 import scalafx.event.ActionEvent
-import scalafx.scene.control.Alert
-import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.ButtonType
 import uit.ai.CaroGUI
 import com.jfoenix.controls.JFXDialog
-import scalafx.scene.control.Label
 import com.jfoenix.controls.JFXDialogLayout
 import scalafx.scene.text.Text
 import scalafx.scene.input.MouseEvent
-import scalafx.scene.Node
 import java.util.ArrayList
 import javafx.scene.layout.StackPane
 import javafx.scene.{ layout => jfxsl }
-import javafx.event.EventHandler
-import javafx.scene.Group
-import scalafx.scene.control.Control
-import scalafx.scene.layout.Region
 import javafx.scene.layout.ColumnConstraints
 import javafx.scene.layout.RowConstraints
 import javafx.scene.layout.Priority
@@ -34,7 +24,6 @@ import javafx.scene.paint.Color
 import uit.ai.model.CaroBoard
 import uit.ai.model.Square
 import uit.ai.model.Circle
-import uit.ai.model.GameResult
 import uit.ai.model.GameResult
 
 @sfxml
@@ -64,6 +53,7 @@ class CaroController(
 
     // tạo biến bàn cờ
     caroBoard = new CaroBoard(size, size, hasBlock)
+    isSquareTurn = true; // vuông luôn luôn đi trước
 
     // xóa bàn cờ cũ
     boardPane.getChildren.clear()
@@ -147,12 +137,8 @@ class CaroController(
           boardPane.setDisable(true)
         })
 
-        // thêm 2 nút vào danh sách
-        val arrayBtn = new ArrayList[javafx.scene.Node]()
-        arrayBtn.add(btnConfirm)
-
-        // thêm danh sách hai nút vào layout
-        dialogLayout.setActions(arrayBtn)
+        // thêm danh sách nút vào layout
+        dialogLayout.setActions(btnConfirm)
 
         // set nội dung của dialog là layout
         endgameForm.setContent(dialogLayout)
@@ -176,12 +162,8 @@ class CaroController(
           boardPane.setDisable(true)
         })
 
-        // thêm 2 nút vào danh sách
-        val arrayBtn = new ArrayList[javafx.scene.Node]()
-        arrayBtn.add(btnConfirm)
-
-        // thêm danh sách hai nút vào layout
-        dialogLayout.setActions(arrayBtn)
+        // thêm danh sách nút vào layout
+        dialogLayout.setActions(btnConfirm)
 
         // set nội dung của dialog là layout
         endgameForm.setContent(dialogLayout)
@@ -206,12 +188,8 @@ class CaroController(
           boardPane.setDisable(true)
         })
 
-        // thêm 2 nút vào danh sách
-        val arrayBtn = new ArrayList[javafx.scene.Node]()
-        arrayBtn.add(btnConfirm)
-
         // thêm danh sách hai nút vào layout
-        dialogLayout.setActions(arrayBtn)
+        dialogLayout.setActions(btnConfirm)
 
         // set nội dung của dialog là layout
         endgameForm.setContent(dialogLayout)
