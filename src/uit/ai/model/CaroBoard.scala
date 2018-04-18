@@ -18,12 +18,9 @@ class CaroBoard(board: Array[Array[Cell]], hasBlock: Boolean) {
     } else if (rowCount <= 5) {
       // connect 4, sort of
       4
-    } else if (rowCount <= 16) {
+    } else {
       // gomoku
       5
-    } else {
-      // connect6. Seems like a good place to leave it
-      6
     }
   }
 
@@ -61,7 +58,7 @@ class CaroBoard(board: Array[Array[Cell]], hasBlock: Boolean) {
       CaroBoard.nInARow(numInARowNeeded, array, hasBlock) match {
         case Some(player) => return player match { // non-local return!
           case Square => GameResult.Square
-          case Round => GameResult.Round
+          case Circle => GameResult.Circle
           case other => throw new Exception("Error, '" + other + "' is not a player.")
         }
         case None => // do nothing

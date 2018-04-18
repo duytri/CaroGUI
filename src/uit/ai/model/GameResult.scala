@@ -2,7 +2,7 @@ package uit.ai.model
 
 object GameResult extends Enumeration {
     type GameResult = Value
-    val Square, Round, Tie, NoResult = Value
+    val Square, Circle, Tie, NoResult = Value
 
     def displayGameResult(gameResult: GameResult) : String = {
         val winnerText = "Congratulation, Player %s won!"
