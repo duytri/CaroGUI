@@ -27,6 +27,8 @@ import ai.dev.team.Circle
 import uit.ai.model.GameResult
 import uit.ai.model.AILoader
 import ai.dev.team.Player
+import scala.util.control.Breaks._
+import uit.ai.model.GameResult.GameResult
 
 @sfxml
 class CaroController(
@@ -103,8 +105,8 @@ class CaroController(
     // nếu có AI đánh cờ, thực hiện việc đánh
     // ở đây chỉ giải quyết 2 trường hợp, AI vss AI và AI đi trước người đi sau
     if (!isSquareHuman) {
+      aiSquare = AILoader.load(playerSquare.getText)
       if (isCircleHuman) { // AI đi trước người đi sau
-        aiSquare = AILoader.load(playerSquare.getText)
         val move = aiSquare.nextMove(caroBoard.getBoard, Square)
         caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
@@ -115,7 +117,43 @@ class CaroController(
         isSquareTurn = false
 
       } else { // AI vs AI
+        aiCircle = AILoader.load(playerCircle.getText)
+        var move = (-1, -1)
+        var gameAIResult = GameResult.NoResult
+        breakable {
+          while (gameAIResult == GameResult.NoResult) {
+            // SQUARE đi trước
+            move = aiSquare.nextMove(caroBoard.getBoard, Square)
+            caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
+            //cập nhật hiển thị bàn cờ
+            var canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
+            var gc = canvas.getGraphicsContext2D
+            CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+            isSquareTurn = false
+
+            // kiểm tra thắng
+            gameAIResult = caroBoard.determineWinner
+            if (gameAIResult != GameResult.NoResult) break
+
+            // CIRCLE đi sau
+            move = aiCircle.nextMove(caroBoard.getBoard, Circle)
+            caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
+
+            //cập nhật hiển thị bàn cờ
+            canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
+            gc = canvas.getGraphicsContext2D
+            CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+            isSquareTurn = true
+
+            // kiểm tra thắng
+            gameAIResult = caroBoard.determineWinner
+            if (gameAIResult != GameResult.NoResult) break
+          }
+        }
+
+        // thông báo kết quả
+        CaroUtils.showResult(gameAIResult, boardPane)
       }
     }
   }
@@ -151,16 +189,17 @@ class CaroController(
     // sau khi người đi, nếu tiếp theo là AI
     // 2 trường hợp: Người đi trước AI đi sau và AI đi trước người đi sau (nước đi tiếp theo)
     if (isSquareHuman) { // người đi trước AI đi sau
-      aiCircle = AILoader.load(playerCircle.getText)
-      val move = aiCircle.nextMove(caroBoard.getBoard, Circle)
-      caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
+      if (!isCircleHuman) {
+        aiCircle = AILoader.load(playerCircle.getText)
+        val move = aiCircle.nextMove(caroBoard.getBoard, Circle)
+        caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
 
-      //cập nhật hiển thị bàn cờ
-      val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
-      val gc = canvas.getGraphicsContext2D
-      CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-      isSquareTurn = true
-      
+        //cập nhật hiển thị bàn cờ
+        val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
+        val gc = canvas.getGraphicsContext2D
+        CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+        isSquareTurn = true
+      }
     } else if (isCircleHuman) { // AI đi trước người đi sau (nước đi tiếp theo)
       val move = aiSquare.nextMove(caroBoard.getBoard, Square)
       caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
@@ -172,86 +211,8 @@ class CaroController(
       isSquareTurn = false
     }
 
-    caroBoard.determineWinner match {
-      case GameResult.Square => {
-        val endgameForm = new JFXDialog // dialog
-        val dialogLayout = new JFXDialogLayout // thiết kế layout
-        dialogLayout.setHeading(new Text("Chúc mừng")) // tiêu đề
-        dialogLayout.setBody(new Text("Người chơi với ký hiệu ô vuông đã thắng!")) //nội dung
-
-        // Hai nút lựa chọn
-        val btnConfirm = new JFXButton("Đóng")
-        btnConfirm.setMinWidth(100)
-        btnConfirm.setMinHeight(40)
-        btnConfirm.setStyle("-fx-background-color:#c8ffcf") //màu nền xanh
-
-        btnConfirm.setOnAction(e => {
-          endgameForm.close // đóng dialog, không thoát nữa
-          boardPane.setDisable(true)
-        })
-
-        // thêm danh sách nút vào layout
-        dialogLayout.setActions(btnConfirm)
-
-        // set nội dung của dialog là layout
-        endgameForm.setContent(dialogLayout)
-        endgameForm.setTransitionType(JFXDialog.DialogTransition.CENTER) // hiệu ứng di chuyển từ giữa
-        endgameForm.show(CaroGUI.stage.getScene.getRoot.asInstanceOf[StackPane]) // lấy control cha là tấm nền chính của cả chương trình
-      }
-      case GameResult.Circle => {
-        val endgameForm = new JFXDialog // dialog
-        val dialogLayout = new JFXDialogLayout // thiết kế layout
-        dialogLayout.setHeading(new Text("Chúc mừng")) // tiêu đề
-        dialogLayout.setBody(new Text("Người chơi với ký hiệu hình tròn đã thắng!")) //nội dung
-
-        // Hai nút lựa chọn
-        val btnConfirm = new JFXButton("Đóng")
-        btnConfirm.setMinWidth(100)
-        btnConfirm.setMinHeight(40)
-        btnConfirm.setStyle("-fx-background-color:#ffa6a6") //màu nền đỏ
-
-        btnConfirm.setOnAction(e => {
-          endgameForm.close // đóng dialog, không thoát nữa
-          boardPane.setDisable(true)
-        })
-
-        // thêm danh sách nút vào layout
-        dialogLayout.setActions(btnConfirm)
-
-        // set nội dung của dialog là layout
-        endgameForm.setContent(dialogLayout)
-        endgameForm.setTransitionType(JFXDialog.DialogTransition.CENTER) // hiệu ứng di chuyển từ giữa
-        endgameForm.show(CaroGUI.stage.getScene.getRoot.asInstanceOf[StackPane]) // lấy control cha là tấm nền chính của cả chương trình
-      }
-
-      case GameResult.Tie => {
-        val endgameForm = new JFXDialog // dialog
-        val dialogLayout = new JFXDialogLayout // thiết kế layout
-        dialogLayout.setHeading(new Text("Chúc mừng")) // tiêu đề
-        dialogLayout.setBody(new Text("Hai bên thiệt là ngang tài ngang sức!")) //nội dung
-
-        // Hai nút lựa chọn
-        val btnConfirm = new JFXButton("Đóng")
-        btnConfirm.setMinWidth(100)
-        btnConfirm.setMinHeight(40)
-        btnConfirm.setStyle("-fx-background-color:#fdb2ff") //màu nền tím
-
-        btnConfirm.setOnAction(e => {
-          endgameForm.close // đóng dialog, không thoát nữa
-          boardPane.setDisable(true)
-        })
-
-        // thêm danh sách hai nút vào layout
-        dialogLayout.setActions(btnConfirm)
-
-        // set nội dung của dialog là layout
-        endgameForm.setContent(dialogLayout)
-        endgameForm.setTransitionType(JFXDialog.DialogTransition.CENTER) // hiệu ứng di chuyển từ giữa
-        endgameForm.show(CaroGUI.stage.getScene.getRoot.asInstanceOf[StackPane]) // lấy control cha là tấm nền chính của cả chương trình
-      }
-
-      case GameResult.NoResult => // do nothing
-    }
+    // thông báo kết quả
+    CaroUtils.showResult(caroBoard.determineWinner, boardPane)
   }
 
   def endGame(event: ActionEvent) {
