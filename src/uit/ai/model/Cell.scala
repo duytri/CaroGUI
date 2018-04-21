@@ -1,4 +1,4 @@
-package ai.dev.team
+package uit.ai.model
 
 sealed abstract class Cell
 case object Square extends Cell

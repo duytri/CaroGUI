@@ -1,10 +1,5 @@
 package uit.ai.model
 
-import ai.dev.team.Square
-import ai.dev.team.Circle
-import ai.dev.team.Cell
-import ai.dev.team.Blank
-
 class CaroBoard(board: Array[Array[Cell]], hasBlock: Boolean) {
 
   def this(rows: Int, cols: Int, hasBlock: Boolean) = this(Array.fill(rows, cols)(Blank): Array[Array[Cell]], hasBlock)

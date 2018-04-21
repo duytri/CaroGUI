@@ -1,4 +1,4 @@
-package ai.dev.team
+package uit.ai.model
 
 trait Player {
   /**

@@ -22,13 +22,12 @@ import javafx.scene.layout.Priority
 import scalafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
 import uit.ai.model.CaroBoard
-import ai.dev.team.Square
-import ai.dev.team.Circle
+import uit.ai.model.Square
+import uit.ai.model.Circle
 import uit.ai.model.GameResult
 import uit.ai.model.AILoader
-import ai.dev.team.Player
+import uit.ai.model.Player
 import scala.util.control.Breaks._
-import uit.ai.model.GameResult.GameResult
 
 @sfxml
 class CaroController(
@@ -46,6 +45,8 @@ class CaroController(
   var caroBoard: CaroBoard = null
   var aiSquare: Player = null
   var aiCircle: Player = null
+  var playerSquareName = ""
+  var playerCircleName = ""
 
   def startGame(event: ActionEvent) {
     boardPane.setDisable(false)
@@ -96,16 +97,19 @@ class CaroController(
     if (playerSquare.getText == "" || playerSquare.getText == "Con người") {
       isSquareHuman = true
       playerSquare.setText("Con người")
+      playerSquareName = "Con người với ký hiệu ô vuông"
     } else isSquareHuman = false
     if (playerCircle.getText == "" || playerCircle.getText == "Con người") {
       isCircleHuman = true
       playerCircle.setText("Con người")
+      playerCircleName = "Con người với ký hiệu hình tròn"
     } else isCircleHuman = false
 
     // nếu có AI đánh cờ, thực hiện việc đánh
     // ở đây chỉ giải quyết 2 trường hợp, AI vss AI và AI đi trước người đi sau
     if (!isSquareHuman) {
       aiSquare = AILoader.load(playerSquare.getText)
+      playerSquareName = aiSquare.getName
       if (isCircleHuman) { // AI đi trước người đi sau
         val move = aiSquare.nextMove(caroBoard.getBoard, Square)
         caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
@@ -118,6 +122,7 @@ class CaroController(
 
       } else { // AI vs AI
         aiCircle = AILoader.load(playerCircle.getText)
+        playerCircleName = aiCircle.getName
         var move = (-1, -1)
         var gameAIResult = GameResult.NoResult
         breakable {
@@ -153,7 +158,7 @@ class CaroController(
         }
 
         // thông báo kết quả
-        CaroUtils.showResult(gameAIResult, boardPane)
+        CaroUtils.showResult(gameAIResult, boardPane, playerSquareName, playerCircleName)
       }
     }
   }
@@ -191,6 +196,7 @@ class CaroController(
     if (isSquareHuman) { // người đi trước AI đi sau
       if (!isCircleHuman) {
         aiCircle = AILoader.load(playerCircle.getText)
+        playerCircleName = aiCircle.getName
         val move = aiCircle.nextMove(caroBoard.getBoard, Circle)
         caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
 
@@ -212,7 +218,7 @@ class CaroController(
     }
 
     // thông báo kết quả
-    CaroUtils.showResult(caroBoard.determineWinner, boardPane)
+    CaroUtils.showResult(caroBoard.determineWinner, boardPane, playerSquareName, playerCircleName)
   }
 
   def endGame(event: ActionEvent) {
