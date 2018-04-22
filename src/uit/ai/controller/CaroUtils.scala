@@ -13,6 +13,7 @@ import scalafx.scene.text.Text
 import uit.ai.model.GameResult
 import uit.ai.CaroGUI
 import javafx.scene.layout.StackPane
+import scalafx.application.Platform
 
 object CaroUtils {
 
@@ -60,28 +61,32 @@ object CaroUtils {
   }
 
   def showCongrateDiaglog(congratText: String, colorCode: String, boardPane: GridPane): Unit = {
-    val endgameForm = new JFXDialog // dialog
-    val dialogLayout = new JFXDialogLayout // thiết kế layout
-    dialogLayout.setHeading(new Text("Chúc mừng")) // tiêu đề
-    dialogLayout.setBody(new Text(congratText)) //nội dung
+    Platform.runLater(new Runnable() {
+      override def run() {
+        val endgameForm = new JFXDialog // dialog
+        val dialogLayout = new JFXDialogLayout // thiết kế layout
+        dialogLayout.setHeading(new Text("Chúc mừng")) // tiêu đề
+        dialogLayout.setBody(new Text(congratText)) //nội dung
 
-    // Hai nút lựa chọn
-    val btnConfirm = new JFXButton("Đóng")
-    btnConfirm.setMinWidth(100)
-    btnConfirm.setMinHeight(40)
-    btnConfirm.setStyle("-fx-background-color:" + colorCode) //màu nền xanh
+        // Hai nút lựa chọn
+        val btnConfirm = new JFXButton("Đóng")
+        btnConfirm.setMinWidth(100)
+        btnConfirm.setMinHeight(40)
+        btnConfirm.setStyle("-fx-background-color:" + colorCode) //màu nền xanh
 
-    btnConfirm.setOnAction(e => {
-      endgameForm.close // đóng dialog, không thoát nữa
-      boardPane.setDisable(true)
+        btnConfirm.setOnAction(e => {
+          endgameForm.close // đóng dialog, không thoát nữa
+          boardPane.setDisable(true)
+        })
+
+        // thêm danh sách nút vào layout
+        dialogLayout.setActions(btnConfirm)
+
+        // set nội dung của dialog là layout
+        endgameForm.setContent(dialogLayout)
+        endgameForm.setTransitionType(JFXDialog.DialogTransition.CENTER) // hiệu ứng di chuyển từ giữa
+        endgameForm.show(CaroGUI.stage.getScene.getRoot.asInstanceOf[StackPane]) // lấy control cha là tấm nền chính của cả chương trình
+      }
     })
-
-    // thêm danh sách nút vào layout
-    dialogLayout.setActions(btnConfirm)
-
-    // set nội dung của dialog là layout
-    endgameForm.setContent(dialogLayout)
-    endgameForm.setTransitionType(JFXDialog.DialogTransition.CENTER) // hiệu ứng di chuyển từ giữa
-    endgameForm.show(CaroGUI.stage.getScene.getRoot.asInstanceOf[StackPane]) // lấy control cha là tấm nền chính của cả chương trình
   }
 }

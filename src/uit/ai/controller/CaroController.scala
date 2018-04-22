@@ -27,6 +27,10 @@ import uit.ai.model.Circle
 import uit.ai.model.GameResult
 import uit.ai.model.AILoader
 import uit.ai.model.Player
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{ Failure, Success }
+import uit.ai.model.GameResult.GameResult
 import scala.util.control.Breaks._
 
 @sfxml
@@ -124,41 +128,52 @@ class CaroController(
         aiCircle = AILoader.load(playerCircle.getText)
         playerCircleName = aiCircle.getName
         var move = (-1, -1)
-        var gameAIResult = GameResult.NoResult
-        breakable {
-          while (gameAIResult == GameResult.NoResult) {
-            // SQUARE đi trước
-            move = aiSquare.nextMove(caroBoard.getBoard, Square)
-            caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
+        val gameAIResult: Future[GameResult] = Future {
+          var result = GameResult.NoResult
+          breakable {
+            while (result == GameResult.NoResult) {
+              Thread.sleep(50)
+              // SQUARE đi trước
+              move = aiSquare.nextMove(caroBoard.getBoard, Square)
+              caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
-            //cập nhật hiển thị bàn cờ
-            var canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
-            var gc = canvas.getGraphicsContext2D
-            CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-            isSquareTurn = false
+              //cập nhật hiển thị bàn cờ
+              var canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
+              var gc = canvas.getGraphicsContext2D
+              CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+              isSquareTurn = false
 
-            // kiểm tra thắng
-            gameAIResult = caroBoard.determineWinner
-            if (gameAIResult != GameResult.NoResult) break
+              // kiểm tra thắng
+              result = caroBoard.determineWinner
+              if (result != GameResult.NoResult)
+                break
 
-            // CIRCLE đi sau
-            move = aiCircle.nextMove(caroBoard.getBoard, Circle)
-            caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
+              Thread.sleep(50)
 
-            //cập nhật hiển thị bàn cờ
-            canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
-            gc = canvas.getGraphicsContext2D
-            CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-            isSquareTurn = true
+              // CIRCLE đi sau
+              move = aiCircle.nextMove(caroBoard.getBoard, Circle)
+              caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
 
-            // kiểm tra thắng
-            gameAIResult = caroBoard.determineWinner
-            if (gameAIResult != GameResult.NoResult) break
+              //cập nhật hiển thị bàn cờ
+              canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
+              gc = canvas.getGraphicsContext2D
+              CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+              isSquareTurn = true
+
+              // kiểm tra thắng
+              result = caroBoard.determineWinner
+              if (result != GameResult.NoResult)
+                break
+            }
           }
+          result
         }
 
         // thông báo kết quả
-        CaroUtils.showResult(gameAIResult, boardPane, playerSquareName, playerCircleName)
+        gameAIResult.onComplete {
+          case Success(value) => CaroUtils.showResult(value, boardPane, playerSquareName, playerCircleName)
+          case Failure(e) => e.printStackTrace()
+        }
       }
     }
   }
