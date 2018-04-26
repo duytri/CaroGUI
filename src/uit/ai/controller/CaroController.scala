@@ -115,7 +115,7 @@ class CaroController(
       aiSquare = AILoader.load(playerSquare.getText)
       playerSquareName = aiSquare.getName
       if (isCircleHuman) { // AI đi trước người đi sau
-        val move = aiSquare.nextMove(caroBoard, Square)
+        val move = aiSquare.nextMove(caroBoard, Square, hasBlock)
         caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
         //cập nhật hiển thị bàn cờ
@@ -134,7 +134,7 @@ class CaroController(
             while (result == GameResult.NoResult) {
               Thread.sleep(50)
               // SQUARE đi trước
-              move = aiSquare.nextMove(caroBoard, Square)
+              move = aiSquare.nextMove(caroBoard, Square, hasBlock)
               caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
               //cập nhật hiển thị bàn cờ
@@ -151,7 +151,7 @@ class CaroController(
               Thread.sleep(50)
 
               // CIRCLE đi sau
-              move = aiCircle.nextMove(caroBoard, Circle)
+              move = aiCircle.nextMove(caroBoard, Circle, hasBlock)
               caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
 
               //cập nhật hiển thị bàn cờ
@@ -212,7 +212,7 @@ class CaroController(
       if (!isCircleHuman) {
         aiCircle = AILoader.load(playerCircle.getText)
         playerCircleName = aiCircle.getName
-        val move = aiCircle.nextMove(caroBoard, Circle)
+        val move = aiCircle.nextMove(caroBoard, Circle, hasBlock)
         caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
 
         //cập nhật hiển thị bàn cờ
@@ -222,7 +222,7 @@ class CaroController(
         isSquareTurn = true
       }
     } else if (isCircleHuman) { // AI đi trước người đi sau (nước đi tiếp theo)
-      val move = aiSquare.nextMove(caroBoard, Square)
+      val move = aiSquare.nextMove(caroBoard, Square, hasBlock)
       caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
       //cập nhật hiển thị bàn cờ
