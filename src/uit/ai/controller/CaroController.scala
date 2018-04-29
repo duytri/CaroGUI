@@ -46,6 +46,7 @@ class CaroController(
   var isSquareTurn = true //biến cờ lượt đi
   var isSquareHuman = true; // biến cờ con người
   var isCircleHuman = true; // biến cờ con người
+  var hasBlock = cbTwoHead.isSelected() //chặn hai đầu
   var caroBoard: CaroBoard = null
   var aiSquare: Player = null
   var aiCircle: Player = null
@@ -56,7 +57,7 @@ class CaroController(
     boardPane.setDisable(false)
 
     // get biến
-    var hasBlock = cbTwoHead.isSelected() //chặn hai đầu
+    hasBlock = cbTwoHead.isSelected() //chặn hai đầu
     var size = boardSize.getText.toInt //kích thước bàn cờ
 
     // tạo biến bàn cờ
