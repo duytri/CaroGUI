@@ -180,61 +180,69 @@ class CaroController(
   }
 
   def playerClicked(event: MouseEvent) {
-    for (node <- boardPane.getChildren.toArray if node.isInstanceOf[javafx.scene.canvas.Canvas]) {
-      var canvas = node.asInstanceOf[javafx.scene.canvas.Canvas]
-      //for (node <- boardPane.getChildren.toArray if node.isInstanceOf[javafx.scene.control.Label]) {
-      //var label = node.asInstanceOf[javafx.scene.control.Label]
-      if (canvas.getBoundsInParent().contains(event.getSceneX() - 5, event.getSceneY() - 5)) { // 5 is a bias
-        //playerSquare.setText("Clicked: " + jfxsl.GridPane.getRowIndex(canvas) + ":" + jfxsl.GridPane.getColumnIndex(canvas))
-        val row = jfxsl.GridPane.getRowIndex(canvas)
-        val col = jfxsl.GridPane.getColumnIndex(canvas)
-        val gc = canvas.getGraphicsContext2D
+    val gameAIResult: Future[GameResult] = Future {
+      for (node <- boardPane.getChildren.toArray if node.isInstanceOf[javafx.scene.canvas.Canvas]) {
+        var canvas = node.asInstanceOf[javafx.scene.canvas.Canvas]
+        //for (node <- boardPane.getChildren.toArray if node.isInstanceOf[javafx.scene.control.Label]) {
+        //var label = node.asInstanceOf[javafx.scene.control.Label]
+        if (canvas.getBoundsInParent().contains(event.getSceneX() - 5, event.getSceneY() - 5)) { // 5 is a bias
+          //playerSquare.setText("Clicked: " + jfxsl.GridPane.getRowIndex(canvas) + ":" + jfxsl.GridPane.getColumnIndex(canvas))
+          val row = jfxsl.GridPane.getRowIndex(canvas)
+          val col = jfxsl.GridPane.getColumnIndex(canvas)
+          val gc = canvas.getGraphicsContext2D
 
-        if (caroBoard.validMove(row, col))
-          if (isSquareTurn) {
-            //gc.setFill(Color.GREEN)
-            //gc.fillRect(7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-            caroBoard.update(row, col, Square)
-            CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-            isSquareTurn = false
-          } else {
-            //gc.setFill(Color.RED)
-            //gc.fillOval(7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-            caroBoard.update(row, col, Circle)
-            CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-            isSquareTurn = true
-          }
+          if (caroBoard.validMove(row, col))
+            if (isSquareTurn) {
+              //gc.setFill(Color.GREEN)
+              //gc.fillRect(7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+              caroBoard.update(row, col, Square)
+              CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+              isSquareTurn = false
+            } else {
+              //gc.setFill(Color.RED)
+              //gc.fillOval(7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+              caroBoard.update(row, col, Circle)
+              CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+              isSquareTurn = true
+            }
+        }
       }
-    }
+      
+      Thread.sleep(50)
+      
+      // sau khi người đi, nếu tiếp theo là AI
+      // 2 trường hợp: Người đi trước AI đi sau và AI đi trước người đi sau (nước đi tiếp theo)
+      if (isSquareHuman) { // người đi trước AI đi sau
+        if (!isCircleHuman) {
+          aiCircle = AILoader.load(playerCircle.getText)
+          playerCircleName = aiCircle.getName
+          val move = aiCircle.nextMove(caroBoard, Circle, hasBlock)
+          caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
 
-    // sau khi người đi, nếu tiếp theo là AI
-    // 2 trường hợp: Người đi trước AI đi sau và AI đi trước người đi sau (nước đi tiếp theo)
-    if (isSquareHuman) { // người đi trước AI đi sau
-      if (!isCircleHuman) {
-        aiCircle = AILoader.load(playerCircle.getText)
-        playerCircleName = aiCircle.getName
-        val move = aiCircle.nextMove(caroBoard, Circle, hasBlock)
-        caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
+          //cập nhật hiển thị bàn cờ
+          val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
+          val gc = canvas.getGraphicsContext2D
+          CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+          isSquareTurn = true
+        }
+      } else if (isCircleHuman) { // AI đi trước người đi sau (nước đi tiếp theo)
+        val move = aiSquare.nextMove(caroBoard, Square, hasBlock)
+        caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
         //cập nhật hiển thị bàn cờ
         val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
         val gc = canvas.getGraphicsContext2D
-        CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-        isSquareTurn = true
+        CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+        isSquareTurn = false
       }
-    } else if (isCircleHuman) { // AI đi trước người đi sau (nước đi tiếp theo)
-      val move = aiSquare.nextMove(caroBoard, Square, hasBlock)
-      caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
-
-      //cập nhật hiển thị bàn cờ
-      val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
-      val gc = canvas.getGraphicsContext2D
-      CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-      isSquareTurn = false
+      caroBoard.determineWinner
     }
 
     // thông báo kết quả
-    CaroUtils.showResult(caroBoard.determineWinner, boardPane, playerSquareName, playerCircleName)
+    gameAIResult.onComplete {
+      case Success(value) => CaroUtils.showResult(value, boardPane, playerSquareName, playerCircleName)
+      case Failure(e) => e.printStackTrace()
+    }
   }
 
   def endGame(event: ActionEvent) {
