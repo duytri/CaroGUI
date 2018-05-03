@@ -13,7 +13,7 @@ import scalafx.scene.layout.StackPane
 object CaroGUI extends JFXApp {
 
   // đọc file thiết kế giao diện
-  val resource = getClass.getResource("view/CaroGUI.fxml") //main/scala/uit/ai/
+  val resource = getClass.getResource("/main/scala/uit/ai/view/CaroGUI.fxml")
   if (resource == null) {
     throw new IOException("Cannot load resource: CaroGUI.fxml")
   }
