@@ -111,7 +111,7 @@ class CaroController(
     } else isCircleHuman = false
 
     // nếu có AI đánh cờ, thực hiện việc đánh
-    // ở đây chỉ giải quyết 2 trường hợp, AI vss AI và AI đi trước người đi sau
+    // ở đây chỉ giải quyết 2 trường hợp, AI vs AI và AI đi trước người đi sau
     if (!isSquareHuman) {
       aiSquare = AILoader.load(playerSquare.getText)
       playerSquareName = aiSquare.getName
