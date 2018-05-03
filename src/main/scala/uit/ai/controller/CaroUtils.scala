@@ -1,17 +1,17 @@
-package uit.ai.controller
+package main.scala.uit.ai.controller
 
 import javafx.scene.paint.Color
 import javafx.scene.canvas.GraphicsContext
 import scalafx.scene.layout.GridPane
 import javafx.scene.{ layout => jfxsl }
 import javafx.scene.canvas.Canvas
-import uit.ai.model.GameResult.GameResult
+import main.scala.uit.ai.model.GameResult.GameResult
 import com.jfoenix.controls.JFXDialog
 import com.jfoenix.controls.JFXDialogLayout
 import com.jfoenix.controls.JFXButton
 import scalafx.scene.text.Text
-import uit.ai.model.GameResult
-import uit.ai.CaroGUI
+import main.scala.uit.ai.model.GameResult
+import main.scala.uit.ai.CaroGUI
 import javafx.scene.layout.StackPane
 import scalafx.application.Platform
 

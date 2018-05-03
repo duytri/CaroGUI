@@ -1,4 +1,4 @@
-package uit.ai.model
+package main.scala.uit.ai.model
 
 trait Player {
   /**

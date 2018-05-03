@@ -1,4 +1,4 @@
-package uit.ai.model
+package main.scala.uit.ai.model
 
 object GameResult extends Enumeration {
     type GameResult = Value

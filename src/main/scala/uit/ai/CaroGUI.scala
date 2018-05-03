@@ -1,4 +1,4 @@
-package uit.ai
+package main.scala.uit.ai
 
 import java.io.IOException
 import scalafx.Includes._
@@ -13,7 +13,7 @@ import scalafx.scene.layout.StackPane
 object CaroGUI extends JFXApp {
 
   // đọc file thiết kế giao diện
-  val resource = getClass.getResource("/uit/ai/view/CaroGUI.fxml")
+  val resource = getClass.getResource("view/CaroGUI.fxml") //main/scala/uit/ai/
   if (resource == null) {
     throw new IOException("Cannot load resource: CaroGUI.fxml")
   }
@@ -25,7 +25,7 @@ object CaroGUI extends JFXApp {
 
   stage = new PrimaryStage {
     title = "CHUONG TRINH THI DAU CO CARO"
-    icons += new Image("/uit/ai/view/uit_logo.png")
+    icons += new Image("main/scala/uit/ai/view/uit_logo.png")
     scene = new Scene(stackPane)
   }
 }

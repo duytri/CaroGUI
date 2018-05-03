@@ -1,4 +1,4 @@
-package uit.ai.controller
+package main.scala.uit.ai.controller
 
 import scalafxml.core.macros.sfxml
 import com.jfoenix.controls.JFXTextField
@@ -8,7 +8,7 @@ import scalafx.application.Platform
 import scalafx.scene.layout.GridPane
 import javafx.fxml.FXML
 import scalafx.event.ActionEvent
-import uit.ai.CaroGUI
+import main.scala.uit.ai.CaroGUI
 import com.jfoenix.controls.JFXDialog
 import com.jfoenix.controls.JFXDialogLayout
 import scalafx.scene.text.Text
@@ -21,16 +21,16 @@ import javafx.scene.layout.RowConstraints
 import javafx.scene.layout.Priority
 import scalafx.scene.canvas.Canvas
 import javafx.scene.paint.Color
-import uit.ai.model.CaroBoard
-import uit.ai.model.Square
-import uit.ai.model.Circle
-import uit.ai.model.GameResult
-import uit.ai.model.AILoader
-import uit.ai.model.Player
+import main.scala.uit.ai.model.CaroBoard
+import main.scala.uit.ai.model.Square
+import main.scala.uit.ai.model.Circle
+import main.scala.uit.ai.model.GameResult
+import main.scala.uit.ai.model.AILoader
+import main.scala.uit.ai.model.Player
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{ Failure, Success }
-import uit.ai.model.GameResult.GameResult
+import main.scala.uit.ai.model.GameResult.GameResult
 import scala.util.control.Breaks._
 
 @sfxml
