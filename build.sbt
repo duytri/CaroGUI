@@ -6,8 +6,12 @@ scalaVersion := "2.12.3"
 assemblyJarName in assembly := "CaroGUI.jar"
 
 libraryDependencies ++= Seq(
-  "org.scala-lang" % "scala-library" % "2.12.3"
+  "org.scala-lang" % "scala-library" % "2.12.3",
+  "org.scala-lang" % "scala-reflect" % "2.12.3"
 )
 
 resolvers += Resolver.sonatypeRepo("releases")
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+
+unmanagedResourceDirectories in Compile += baseDirectory.value / "src"
+excludeFilter in unmanagedResourceDirectories := "*.scala"
