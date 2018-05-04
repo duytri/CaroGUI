@@ -207,35 +207,41 @@ class CaroController(
             }
         }
       }
-      
-      Thread.sleep(50)
-      
-      // sau khi người đi, nếu tiếp theo là AI
-      // 2 trường hợp: Người đi trước AI đi sau và AI đi trước người đi sau (nước đi tiếp theo)
-      if (isSquareHuman) { // người đi trước AI đi sau
-        if (!isCircleHuman) {
-          aiCircle = AILoader.load(playerCircle.getText)
-          playerCircleName = aiCircle.getName
-          val move = aiCircle.nextMove(caroBoard, Circle, hasBlock)
-          caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
+
+      // kiểm tra thắng
+      val result = caroBoard.determineWinner
+      if (result != GameResult.NoResult) {
+        result
+      } else {
+        Thread.sleep(50)
+
+        // sau khi người đi, nếu tiếp theo là AI
+        // 2 trường hợp: Người đi trước AI đi sau và AI đi trước người đi sau (nước đi tiếp theo)
+        if (isSquareHuman) { // người đi trước AI đi sau
+          if (!isCircleHuman) {
+            aiCircle = AILoader.load(playerCircle.getText)
+            playerCircleName = aiCircle.getName
+            val move = aiCircle.nextMove(caroBoard, Circle, hasBlock)
+            caroBoard.update(move._1, move._2, Circle) // cập nhật lại biến bàn cờ
+
+            //cập nhật hiển thị bàn cờ
+            val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
+            val gc = canvas.getGraphicsContext2D
+            CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+            isSquareTurn = true
+          }
+        } else if (isCircleHuman) { // AI đi trước người đi sau (nước đi tiếp theo)
+          val move = aiSquare.nextMove(caroBoard, Square, hasBlock)
+          caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
 
           //cập nhật hiển thị bàn cờ
           val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
           val gc = canvas.getGraphicsContext2D
-          CaroUtils.drawWithAnimation(gc, CaroUtils.CIRCLE, Color.RED, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-          isSquareTurn = true
+          CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
+          isSquareTurn = false
         }
-      } else if (isCircleHuman) { // AI đi trước người đi sau (nước đi tiếp theo)
-        val move = aiSquare.nextMove(caroBoard, Square, hasBlock)
-        caroBoard.update(move._1, move._2, Square) // cập nhật lại biến bàn cờ
-
-        //cập nhật hiển thị bàn cờ
-        val canvas = CaroUtils.getNodeByRowColumnIndex(move._1, move._2, boardPane)
-        val gc = canvas.getGraphicsContext2D
-        CaroUtils.drawWithAnimation(gc, CaroUtils.SQUARE, Color.GREEN, 7, 7, canvas.getWidth - 14, canvas.getHeight - 14)
-        isSquareTurn = false
+        caroBoard.determineWinner
       }
-      caroBoard.determineWinner
     }
 
     // thông báo kết quả
