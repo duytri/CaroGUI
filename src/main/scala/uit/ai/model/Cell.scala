@@ -1,8 +1,14 @@
 package main.scala.uit.ai.model
 
-sealed abstract class Cell
-case object Square extends Cell
-case object Circle extends Cell
+sealed abstract class Cell {
+  val value: Byte = 0
+}
+case object Square extends Cell {
+  override val value: Byte = 1
+}
+case object Circle extends Cell {
+  override val value: Byte = -1
+}
 case object Blank extends Cell {
-    override def toString = " "
+  override val value: Byte = 0
 }

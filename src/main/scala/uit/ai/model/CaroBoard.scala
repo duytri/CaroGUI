@@ -134,6 +134,13 @@ class CaroBoard(val board: Array[Array[Cell]], val hasBlock: Boolean) {
     cloneBoard.update(row, col, Cell)
     cloneBoard
   }
+
+  //
+  def getBoardAsByteArray(): Array[Array[Byte]] = {
+    (for (r <- 0 until rowCount) yield (
+      for (c <- 0 until columnCount)
+        yield board(r)(c).value).toArray).toArray
+  }
 }
 
 object CaroBoard {
